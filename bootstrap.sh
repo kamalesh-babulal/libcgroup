@@ -13,7 +13,9 @@ git submodule update --init --recursive
 
 # configure libcgroup-tests
 pushd tests
-git checkout main
+git remote add actions https://github.com/kamalesh-babulal/libcgroup-tests/
+git fetch --all
+git checkout -b actions actions/actions
 popd
 
 # configure googletest
