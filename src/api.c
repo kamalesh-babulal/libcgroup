@@ -54,6 +54,7 @@ const struct cgroup_library_version library_version = {
 
 /*
  * The errno which happend the last time (have to be thread specific)
+ * testtttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt
  */
 __thread int last_errno;
 
