@@ -34,6 +34,14 @@ jobs:
           echo "Cleaning up previous run"
           rm -rf "${{ github.workspace }}"
 
+  checkpatch:
+    name: checkpatch
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Run checkpatch review
+        uses: webispy/checkpatch-action@master
+
   codeql:
     name: CodeQL
     runs-on: ubuntu-latest
