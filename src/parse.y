@@ -31,7 +31,7 @@ int yywrap(void)
 
 %}
 
-%token <name> ID MOUNT GROUP PERM TASK ADMIN NAMESPACE DEFAULT TEMPLATE
+%token <name> ID MOUNT GROUP PERM TASK ADMIN NAMESPACE DEFAULT TEMPLATE DELEGATE
 
 %union {
 	char *name;
@@ -48,6 +48,7 @@ int yywrap(void)
 %type <val> template_task_or_admin template_task_namevalue_conf
 %type <val> template_admin_namevalue_conf template_task_conf
 %type <val> template_admin_conf
+%type <val> delegatevalue_conf delegate
 %start start
 %%
 
@@ -68,6 +69,10 @@ start   : start group
 		$$ = $1;
 	}
 	| start template
+	{
+		$$ = $1;
+	}
+	| start delegate
 	{
 		$$ = $1;
 	}
@@ -475,4 +480,36 @@ namespace   :       NAMESPACE '{' namespace_conf '}'
 	}
         ;
 
+delegatevalue_conf
+	:	ID '=' ID ';'
+	{
+		if (!cgroup_config_add_delegate_conf($1, $3)) {
+			cgroup_config_cleanup_delegate();
+			$$ = ECGCONFIGPARSEFAIL;
+			return $$;
+		}
+		$$ = 1;
+	}
+	|	delegatevalue_conf ID '=' ID ';'
+	{
+		if (!cgroup_config_add_delegate_conf($2, $4)) {
+			cgroup_config_cleanup_delegate();
+			$$ = ECGCONFIGPARSEFAIL;
+			return $$;
+		}
+		$$ = 1;
+	}
+	;
+
+delegate   :	  DELEGATE '{' delegatevalue_conf '}'
+	{
+		$$ = $3;
+		if (!$$) {
+			fprintf(stderr, "parsing failed at line number %d\n",
+				line_no);
+			$$ = ECGCONFIGPARSEFAIL;
+			return $$;
+		}
+	}
+	;
 %%

@@ -146,4 +146,5 @@ CGROUP_3.0 {
 	cgroup_cgxset;
 	cgroup_version;
 	cgroup_list_mount_points;
+	cgroup_parse_delegate_path_config;
 } CGROUP_2.0;

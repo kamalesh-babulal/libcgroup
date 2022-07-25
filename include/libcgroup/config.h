@@ -37,6 +37,11 @@ extern "C" {
 int cgroup_config_load_config(const char *pathname);
 
 /**
+ * Parse the cgroup configuration file and form the default delegation path.
+ */
+int cgroup_parse_delegate_path_config(const char *pathname);
+
+/**
  * Delete all control groups and unmount all hierarchies.
  */
 int cgroup_unload_cgroups(void);

@@ -16,6 +16,7 @@
  */
 
 #include "tools/tools-common.h"
+#include "systemd.h"
 
 #include <libcgroup.h>
 #include <libcgroup-internal.h>
@@ -90,6 +91,12 @@ static struct cgroup_string_list *template_files;
 
 /* Needed for the type while mounting cgroupfs. */
 #define CGROUP_FILESYSTEM "cgroup"
+
+/*
+ * Slice and Scope names are used the systemd delegate.
+ */
+static char slice_name[FILENAME_MAX];
+static char scope_name[FILENAME_MAX];
 
 /*
  * NOTE: All these functions return 1 on success and not 0 as is the
@@ -607,6 +614,26 @@ void cgroup_config_cleanup_namespace_table(void)
 {
 	memset(&config_namespace_table, 0, sizeof(struct cg_mount_table_s) * CG_CONTROLLER_MAX);
 }
+/*
+ * Parse the delegate configuration options and fill it.
+ */
+int cgroup_config_add_delegate_conf(char *config, char *value)
+{
+	if (strncmp(config, "slice", 4) != 0 && strncmp (config, "scope", 4) != 0)
+		return 0;
+
+	snprintf(slice_name, FILENAME_MAX, "%s.slice", value);
+	snprintf(scope_name, FILENAME_MAX, "%s.scope", value);
+
+	return 1;
+}
+
+void cgroup_config_cleanup_delegate(void)
+{
+	memset(slice_name, '\0', FILENAME_MAX - 1);
+	memset(scope_name, '\0', FILENAME_MAX - 1);
+	memset(delegate_cgroup_path, '\0', FILENAME_MAX - 1);
+}
 
 /**
  * Add necessary options for mount. Currently only 'none' option is added
@@ -887,6 +914,31 @@ out_error:
 	return error;
 }
 
+int config_create_slice_scope(void)
+{
+	char mount_path[FILENAME_MAX];
+	int i, err = 0;
+
+	if (strlen(slice_name) == 0 || strlen(scope_name) == 0)
+		return 1;
+
+	pthread_rwlock_wrlock(&cg_mount_table_lock);
+	for (i = 0; cg_mount_table[i].name[0] != '\0'; i++) {
+		snprintf(mount_path, FILENAME_MAX, "%s/%s/%s",
+				cg_mount_table[i].mount.path, slice_name, scope_name);
+		if (!access(mount_path, F_OK))
+			goto out;
+	}
+	err =  cgroup_create_scope_and_slice(scope_name, slice_name, 1, "fail");
+	if (err)
+		goto out;
+
+out:
+	snprintf(delegate_cgroup_path, FILENAME_MAX, "%s/", slice_name);
+	pthread_rwlock_unlock(&cg_mount_table_lock);
+	return err;
+}
+
 /*
  * Should always be called after cgroup_init() has been called
  *
@@ -1061,6 +1113,46 @@ err:
 	return ret;
 }
 
+int cgroup_parse_delegate_path_config(const char *pathname)
+{
+	int ret;
+
+	yyin = fopen(pathname, "re");
+
+	if (!yyin) {
+		cgroup_err("failed to open file %s\n", pathname);
+		last_errno = errno;
+		return ECGOTHER;
+	}
+
+	/*
+	 * Parser calls longjmp() on really fatal error (like out-of-memory).
+	 */
+	ret = setjmp(parser_error_env);
+	if (!ret)
+		ret = yyparse();
+	if (ret) {
+		/*
+		 * Either yyparse failed or longjmp() was called.
+		 */
+		cgroup_err("failed to parse file %s\n", pathname);
+		ret = ECGCONFIGPARSEFAIL;
+		goto err;
+	}
+	ret = config_create_slice_scope();
+	if (ret) {
+		cgroup_err("Unable to create slice\n");
+		ret = ECGCONFIGPARSEFAIL;
+	}
+err:
+	if (yyin)
+		fclose(yyin);
+	if (ret)
+		cgroup_free_config();
+
+	return ret;
+}
+
 int _cgroup_config_compare_groups(const void *p1, const void *p2)
 {
 	const struct cgroup *g1 = p1;
@@ -1123,6 +1215,10 @@ int cgroup_config_load_config(const char *pathname)
 		goto err_mnt;
 
 	error = config_validate_namespaces();
+	if (error)
+		goto err_mnt;
+
+	error = config_create_slice_scope();
 	if (error)
 		goto err_mnt;
 

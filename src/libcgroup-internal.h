@@ -239,6 +239,11 @@ extern pthread_rwlock_t cg_mount_table_lock;
 extern __thread char *cg_namespace_table[CG_CONTROLLER_MAX];
 
 /*
+ * Global delegate default path.
+ */
+extern char delegate_cgroup_path[FILENAME_MAX];
+
+/*
  * config related API
  */
 int cgroup_config_insert_cgroup(char *cg_name);
@@ -254,6 +259,8 @@ int cgroup_config_insert_into_namespace_table(char *name, char *mount_point);
 void cgroup_config_cleanup_mount_table(void);
 void cgroup_config_cleanup_namespace_table(void);
 int cgroup_config_define_default(void);
+int cgroup_config_add_delegate_conf(char *config, char *value);
+void cgroup_config_cleanup_delegate(void);
 
 /**
  * Create an empty dictionary.

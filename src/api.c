@@ -96,6 +96,9 @@ struct cg_mount_table_s cg_mount_table[CG_CONTROLLER_MAX];
 /* Cgroup v2 mount paths, with empty controllers */
 struct cg_mount_point *cg_cgroup_v2_empty_mount_paths;
 
+/* Delegate cgroup name */
+char delegate_cgroup_path[FILENAME_MAX];
+
 const char * const cgroup_strerror_codes[] = {
 	"Cgroup is not compiled in",
 	"Cgroup is not mounted",
