@@ -209,6 +209,12 @@ int main(int argc, char *argv[])
 		goto err;
 	}
 
+	ret = cgroup_parse_delegate_path_config(CGCONFIG_CONF_FILE);
+	if (ret) {
+		err("%s: failed to parse configuration file %s\n",argv[0],  CGCONFIG_CONF_FILE);
+		goto err;
+	}
+
 	/* copy the name-value pairs from -r options */
 	if ((flags & FL_RULES) != 0) {
 		src_cgroup = create_cgroup_from_name_value_pairs("tmp", name_value, nv_number);
