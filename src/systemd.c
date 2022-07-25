@@ -328,6 +328,7 @@ int cgroup_is_delegated(char *scope_name){
 	return ret;
 }
 
+#if 0
 int main (int argc, char* argv[]){
 
 	char file_path[FILENAME_MAX], file_root[FILENAME_MAX];
@@ -357,3 +358,4 @@ int main (int argc, char* argv[]){
 	sleep(100); // Allow time to check manually
 
 }
+#endif
