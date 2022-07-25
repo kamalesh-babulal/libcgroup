@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <libgen.h>
 #include <stdio.h>
 
 #define MODE_SHOW_HEADERS	1
@@ -555,7 +556,8 @@ static int fill_empty_controller(struct cgroup * const cg, struct cgroup_control
 	struct dirent *ctrl_dir = NULL;
 	bool found_mount = false;
 	int i, path_len, ret = 0;
-	char path[FILENAME_MAX];
+	char path[FILENAME_MAX] = { '\0' };
+	char tmp[FILENAME_MAX] = { '\0' };
 	DIR *dir = NULL;
 
 	pthread_rwlock_rdlock(&cg_mount_table_lock);
@@ -575,6 +577,12 @@ static int fill_empty_controller(struct cgroup * const cg, struct cgroup_control
 		goto out;
 
 	path_len = strlen(path);
+	if (cg->name[0] == '/' && strncmp(path + (path_len - 7), ".slice/", 7) == 0) {
+		snprintf(tmp, FILENAME_MAX, "%s", dirname(path));
+		strncpy(path, tmp, FILENAME_MAX - 1);
+		path[FILENAME_MAX - 1] = '\0';
+	}
+
 	strncat(path, cg->name, FILENAME_MAX - path_len - 1);
 	path[sizeof(path) - 1] = '\0';
 
@@ -731,6 +739,12 @@ int main(int argc, char *argv[])
 	ret = cgroup_init();
 	if (ret) {
 		err("%s: libcgroup initialization failed: %s\n", argv[0], cgroup_strerror(ret));
+		goto err;
+	}
+
+	ret = cgroup_parse_delegate_path_config(CGCONFIG_CONF_FILE);
+	if (ret) {
+		err("%s: failed to parse configuration file %s\n",argv[0],  CGCONFIG_CONF_FILE);
 		goto err;
 	}
 
