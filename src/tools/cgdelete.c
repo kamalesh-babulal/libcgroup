@@ -130,6 +130,12 @@ int main(int argc, char *argv[])
 		goto err;
 	}
 
+	ret = cgroup_parse_delegate_path_config(CGCONFIG_CONF_FILE);
+	if (ret) {
+		err("%s: failed to parse configuration file %s\n",argv[0],  CGCONFIG_CONF_FILE);
+		goto err;
+	}
+
 	cgroup_list = calloc(argc, sizeof(struct cgroup_group_spec *));
 	if (cgroup_list == NULL) {
 		err("%s: out of memory\n", argv[0]);
