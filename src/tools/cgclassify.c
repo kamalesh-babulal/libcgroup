@@ -160,6 +160,12 @@ int main(int argc, char *argv[])
 		return ret;
 	}
 
+	ret = cgroup_parse_delegate_path_config(CGCONFIG_CONF_FILE);
+	if (ret) {
+		err("%s: failed to parse configuration file %s\n",argv[0],  CGCONFIG_CONF_FILE);
+		return ret;
+	}
+
 	for (i = optind; i < argc; i++) {
 		pid = (pid_t) strtol(argv[i], &endptr, 10);
 		if (endptr[0] != '\0') {
