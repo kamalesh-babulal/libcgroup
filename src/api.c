@@ -1589,12 +1589,17 @@ char *cg_build_path_locked(const char *name, char *path, const char *type)
 	 * any controller.
 	 */
 	if (!type && strlen(cg_cgroup_v2_mount_path) > 0) {
-		ret = snprintf(path, FILENAME_MAX, "%s/", cg_cgroup_v2_mount_path);
+		ret = snprintf(path, FILENAME_MAX, "%s/%s", cg_cgroup_v2_mount_path,
+			       delegate_cgroup_path);
 		if (ret >= FILENAME_MAX)
-			cgroup_dbg("filename too long: %s/", cg_cgroup_v2_mount_path);
+			cgroup_dbg("filename too long: %s/%s", cg_cgroup_v2_mount_path,
+				   delegate_cgroup_path);
 
 		if (name) {
 			char *tmp;
+
+			if (name[0] == '/')
+				snprintf(path, FILENAME_MAX, "%s/", cg_cgroup_v2_mount_path);
 
 			tmp = strdup(path);
 			if (tmp == NULL)
@@ -1618,25 +1623,39 @@ char *cg_build_path_locked(const char *name, char *path, const char *type)
 		     cg_mount_table[i].version == CGROUP_V2)) {
 
 			if (cg_namespace_table[i]) {
-				ret = snprintf(path, FILENAME_MAX, "%s/%s/",
+				ret = snprintf(path, FILENAME_MAX, "%s/%s%s/",
 						cg_mount_table[i].mount.path,
+						delegate_cgroup_path,
 						cg_namespace_table[i]);
 				if (ret >= FILENAME_MAX) {
-					cgroup_dbg("filename too long:%s/%s/",
+					cgroup_dbg("filename too long:%s/%s%s/",
 						   cg_mount_table[i].mount.path,
+						   delegate_cgroup_path,
 						   cg_namespace_table[i]);
 				}
 			} else {
-				ret = snprintf(path, FILENAME_MAX, "%s/",
-					       cg_mount_table[i].mount.path);
+				ret = snprintf(path, FILENAME_MAX, "%s/%s",
+					       cg_mount_table[i].mount.path, delegate_cgroup_path);
 				if (ret >= FILENAME_MAX) {
-					cgroup_dbg("filename too long:%s/",
-						   cg_mount_table[i].mount.path);
+					cgroup_dbg("filename too long:%s/%s",
+						   cg_mount_table[i].mount.path,
+						   delegate_cgroup_path);
 				}
 			}
 
 			if (name) {
 				char *tmp;
+
+				if (name[0] == '/') {
+					if (cg_namespace_table[i]) {
+						ret = snprintf(path, FILENAME_MAX, "%s/%s/",
+								cg_mount_table[i].mount.path,
+								cg_namespace_table[i]);
+					} else {
+						ret = snprintf(path, FILENAME_MAX, "%s/",
+								cg_mount_table[i].mount.path);
+					}
+				}
 
 				tmp = strdup(path);
 				if (tmp == NULL)
