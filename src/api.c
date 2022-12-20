@@ -3506,6 +3506,16 @@ int cgroup_get_cgroup(struct cgroup *cgroup)
 			cgroup->tasks_gid = stat_buffer.st_gid;
 
 			free(control_path);
+		} else { /* cgroup v2 */
+			bool enabled;
+
+			ret = cgroupv2_get_subtree_control(path, cg_mount_table[i].name,
+							  &enabled);
+			if (ret)
+				continue;
+
+			if (!enabled)
+				continue;
 		}
 
 		cgc = cgroup_add_controller(cgroup, cg_mount_table[i].name);
