@@ -549,7 +549,8 @@ class Cgroup(object):
                 res = Run.run(cmd)
         except RunError as re:
             if re.ret == 0 and \
-               'neither blacklisted nor whitelisted' in re.stderr:
+               ('neither blacklisted nor whitelisted' or 'user name') \
+               in re.stderr:
                 res = re.stdout
             else:
                 raise(re)
