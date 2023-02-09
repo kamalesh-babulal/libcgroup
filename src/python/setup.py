@@ -25,9 +25,8 @@ setup(
     ext_modules=cythonize([
             Extension(
                       'libcgroup', ['libcgroup.pyx'],
-                      # unable to handle libtool libraries directly
-                      extra_objects=['../.libs/libcgroup.a'],
-                      libraries=['systemd']
+                      library_dirs=["../.libs"],
+                      libraries=['cgroup', 'systemd']
                      ),
              ])
 )

@@ -11,6 +11,8 @@ if [ "$START_DIR" != "$SCRIPT_DIR" ]; then
 	cp "$SCRIPT_DIR"/*.py "$START_DIR"
 fi
 
+export LD_LIBRARY_PATH="../../src/.libs:$LD_LIBRARY_PATH"
+
 if [ -d ../../src/python/build/lib.* ]; then
 	pushd ../../src/python/build/lib.*
 	export PYTHONPATH="$PYTHONPATH:$(pwd)"
@@ -26,7 +28,9 @@ PATH="$PATH:$(pwd)"
 export PATH
 popd || exit $AUTOMAKE_HARD_ERROR
 
-sudo PATH=$PATH PYTHONPATH=$PYTHONPATH ./ftests.py -l 10 -s "sudo" \
+export LD_LIBRARY_PATH="$PATH/.lib/:$LD_LIBRARY_PATH"
+
+sudo PATH=$PATH LD_LIBRARY_PATH=$LD_LIBRARY_PATH PYTHONPATH=$PYTHONPATH ./ftests.py -l 10 -s "sudo" \
 	-L "$START_DIR/ftests-nocontainer.py.sudo.log" --no-container -n Libcg"$RANDOM"
 RET2=$?
 

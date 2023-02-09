@@ -8,6 +8,8 @@ if [ "$START_DIR" != "$SCRIPT_DIR" ]; then
 	cp "$SCRIPT_DIR"/*.py "$START_DIR"
 fi
 
+export LD_LIBRARY_PATH="../../src/.libs:$LD_LIBRARY_PATH"
+
 if [ -d ../../src/python/build/lib.* ]; then
 	pushd ../../src/python/build/lib.*
 	export PYTHONPATH="$PYTHONPATH:$(pwd)"
