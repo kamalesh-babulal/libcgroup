@@ -28,6 +28,10 @@ def prereqs(config):
 
 
 def setup(config):
+    # Remove the stale directories from previous unsuccessful runs
+    cmd = ['sudo', 'rm', '-rf', MNT_POINT]
+    Run.run(cmd)
+
     cmd = ['sudo', 'mkdir']
 
     cmd.append(MNT_POINT)
