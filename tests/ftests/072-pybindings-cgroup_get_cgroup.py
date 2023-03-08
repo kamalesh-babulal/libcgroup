@@ -20,19 +20,14 @@ CONTROLLERS = ['cpu', 'memory', 'io', 'pids']
 
 CGNAME2 = '{}/grandchildcg'.format(CGNAME)
 
+
 def prereqs(config):
     result = consts.TEST_PASSED
     cause = None
 
-    if config.args.container:
-        result = consts.TEST_SKIPPED
-        cause = 'This test cannot be run within a container'
-        return result, cause
-
     if Cgroup.cgroup_mode() != Mode.CGROUP_MODE_UNIFIED:
         result = consts.TEST_SKIPPED
         cause = 'This test requires the unified cgroup v2 hierarchy'
-        return result, cause
 
     return result, cause
 

@@ -25,11 +25,6 @@ def prereqs(config):
     result = consts.TEST_PASSED
     cause = None
 
-    if config.args.container:
-        result = consts.TEST_SKIPPED
-        cause = 'This test cannot be run within a container'
-        return result, cause
-
     if CgroupCli.get_cgroup_mode(config) != Mode.CGROUP_MODE_UNIFIED:
         result = consts.TEST_SKIPPED
         cause = 'This test requires the unified cgroup hierarchy'
