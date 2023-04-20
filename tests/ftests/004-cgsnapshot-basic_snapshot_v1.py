@@ -7,7 +7,7 @@
 # Author: Tom Hromatka <tom.hromatka@oracle.com>
 #
 
-from cgroup import Cgroup, CgroupVersion
+from cgroup import Cgroup, Mode
 from run import RunError
 import consts
 import ftests
@@ -52,14 +52,15 @@ def prereqs(config):
     result = consts.TEST_PASSED
     cause = None
 
-    if CgroupVersion.get_version('memory') != CgroupVersion.CGROUP_V1:
-        result = consts.TEST_SKIPPED
-        cause = 'This test requires the cgroup v1 memory controller'
-        return result, cause
-
     if not config.args.container:
         result = consts.TEST_SKIPPED
         cause = 'This test must be run within a container'
+        return result, cause
+
+    mode = Cgroup.get_cgroup_mode(config)
+    if (mode != Mode.CGROUP_MODE_LEGACY and mode != Mode.CGROUP_MODE_HYBRID):
+        result = consts.TEST_SKIPPED
+        cause = 'This test requires the legacy/hybrid cgroup hierarchy'
 
     return result, cause
 
