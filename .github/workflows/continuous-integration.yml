@@ -181,10 +181,12 @@ jobs:
         # unmount the cpuset v1 controller.  This should make it available
         # in the v2 hierarchy after all references have been freed
         sudo umount /sys/fs/cgroup/cpuset
+        sudo umount /sys/fs/cgroup/cpu
+        sudo umount /sys/fs/cgroup/memory
         # wait for the references to the cpuset controller to go away
         sleep 30
         cat /sys/fs/cgroup/unified/cgroup.controllers
-        sudo su -c "echo +cpuset > /sys/fs/cgroup/unified/cgroup.subtree_control"
+        sudo su -c "echo +cpuset +cpu +memory > /sys/fs/cgroup/unified/cgroup.subtree_control"
         cat /sys/fs/cgroup/unified/cgroup.subtree_control
     - name: Install container dependencies
       run: |
