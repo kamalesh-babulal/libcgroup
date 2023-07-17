@@ -22,6 +22,10 @@ RUNNER_MAX_TRIES=10		# Abort after 50 minutes, if we don't chance to run
 START_DIR=$PWD
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
+# setup trap function for github workflow cancellation
+trap 'cleanup 1' SIGINT
+trap 'cleanup 1' SIGTERM
+
 if [ "$START_DIR" != "$SCRIPT_DIR" ]; then
 	cp "$SCRIPT_DIR"/*.py "$START_DIR"
 fi
