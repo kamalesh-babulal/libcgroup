@@ -529,7 +529,11 @@ static int is_ctlr_on_list(char controllers[CG_CONTROLLER_MAX][FILENAME_MAX],
 
 	/* Lets reset the controllers to intersection of controller ∩ wanted_conts */
 	for (i = 0; tmp_controllers[i][0] != '\0'; i++) {
-		snprintf(controllers[i], FILENAME_MAX, "%s", tmp_controllers[i]);
+		/*
+		 *  gcc complains about truncation, while using snprintf()
+		 *  and coverity complains about truncation using strncpy().
+		 */
+		memcpy(controllers[i], tmp_controllers[i], sizeof(controllers[i]));
 		ret = 1;
 	}
 	(controllers[i])[0] = '\0';
