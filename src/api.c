@@ -154,7 +154,7 @@ static int cg_chown_file(FTS *fts, FTSENT *ent, uid_t owner, gid_t group)
 	const char *filename = fts->fts_path;
 	int ret = 0;
 
-	cgroup_dbg("chown: seeing file %s\n", filename);
+	cgroup_dbg  ("chown: seeing file %s\n", filename);
 	switch (ent->fts_info) {
 	case FTS_ERR:
 		errno = ent->fts_errno;
