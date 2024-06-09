@@ -18,7 +18,7 @@ CONTROLLER2 = 'cpu'
 CGNAME = '013cgget'
 
 EXPECTED_OUT_V1 = [
-    '''013cgget:
+    """013cgget:
     pids.current: 0
     pids.events: max 0
     pids.max: max
@@ -29,9 +29,9 @@ EXPECTED_OUT_V1 = [
     cpu.shares: 1024
     cpu.cfs_quota_us: -1
     cpu.uclamp.min: 0.00
-    cpu.uclamp.max: max''',
+    cpu.uclamp.max: max""",
     # with cfs_bandwidth without cpu.stat nr_busts, burst_time
-    '''013cgget:
+    """013cgget:
     pids.current: 0
     pids.events: max 0
     pids.max: max
@@ -44,9 +44,9 @@ EXPECTED_OUT_V1 = [
     cpu.idle: 0
     cpu.cfs_quota_us: -1
     cpu.uclamp.min: 0.00
-    cpu.uclamp.max: max''',
+    cpu.uclamp.max: max""",
     # with cfs_bandwidth with cpu.stat nr_busts, burst_time
-    '''013cgget:
+    """013cgget:
     pids.current: 0
     pids.events: max 0
     pids.max: max
@@ -61,9 +61,9 @@ EXPECTED_OUT_V1 = [
     cpu.idle: 0
     cpu.cfs_quota_us: -1
     cpu.uclamp.min: 0.00
-    cpu.uclamp.max: max''',
+    cpu.uclamp.max: max""",
     # with cfs_bandwidth, pids.peak with cpu.stat nr_busts, burst_time
-    '''013cgget:
+    """013cgget:
     pids.current: 0
     pids.events: max 0
     pids.max: max
@@ -79,12 +79,12 @@ EXPECTED_OUT_V1 = [
     cpu.idle: 0
     cpu.cfs_quota_us: -1
     cpu.uclamp.min: 0.00
-    cpu.uclamp.max: max'''
+    cpu.uclamp.max: max"""
 ]
 
 
 EXPECTED_OUT_V2 = [
-    '''013cgget:
+    """013cgget:
     pids.current: 0
     pids.events: max 0
     pids.max: max
@@ -99,9 +99,9 @@ EXPECTED_OUT_V2 = [
     cpu.pressure: some avg10=0.00 avg60=0.00 avg300=0.00 total=0
     cpu.max: max 100000
     cpu.uclamp.min: 0.00
-    cpu.uclamp.max: max''',
+    cpu.uclamp.max: max""",
     # with PSI
-    '''013cgget:
+    """013cgget:
     pids.current: 0
     pids.events: max 0
     pids.max: max
@@ -117,9 +117,9 @@ EXPECTED_OUT_V2 = [
             full avg10=0.00 avg60=0.00 avg300=0.00 total=0
     cpu.max: max 100000
     cpu.uclamp.min: 0.00
-    cpu.uclamp.max: max''',
+    cpu.uclamp.max: max""",
     # with PSI, cfs_bandwidth without cpu.stat nr_busts, burst_time
-    '''013cgget:
+    """013cgget:
     pids.current: 0
     pids.events: max 0
     pids.max: max
@@ -137,9 +137,9 @@ EXPECTED_OUT_V2 = [
     cpu.max.burst: 0
     cpu.max: max 100000
     cpu.uclamp.min: 0.00
-    cpu.uclamp.max: max''',
+    cpu.uclamp.max: max""",
     # with PSI, cfs_bandwidth with cpu.stat nr_busts, burst_time
-    '''013cgget:
+    """013cgget:
     pids.current: 0
     pids.events: max 0
     pids.max: max
@@ -159,9 +159,9 @@ EXPECTED_OUT_V2 = [
     cpu.max.burst: 0
     cpu.max: max 100000
     cpu.uclamp.min: 0.00
-    cpu.uclamp.max: max''',
+    cpu.uclamp.max: max""",
     # with PSI, cfs_bandwidth with cpu.stat nr_busts, burst_time, force_idle
-    '''013cgget:
+    """013cgget:
     pids.current: 0
     pids.events: max 0
     pids.max: max
@@ -182,10 +182,10 @@ EXPECTED_OUT_V2 = [
     cpu.max.burst: 0
     cpu.max: max 100000
     cpu.uclamp.min: 0.00
-    cpu.uclamp.max: max''',
+    cpu.uclamp.max: max""",
     # with PSI, cfs_bandwidth, pids.peak
     # with cpu.stat nr_busts, burst_time, force_idle
-    '''013cgget:
+    """013cgget:
     pids.current: 0
     pids.events: max 0
     pids.max: max
@@ -207,7 +207,7 @@ EXPECTED_OUT_V2 = [
     cpu.max.burst: 0
     cpu.max: max 100000
     cpu.uclamp.min: 0.00
-    cpu.uclamp.max: max'''
+    cpu.uclamp.max: max"""
 ]
 
 
