@@ -57,4 +57,14 @@ EXPECTED_PIDS_OUT = [
 EXPECTED_CPU_OUT_V1 = consts_ubuntu.EXPECTED_CPU_OUT_V1
 EXPECTED_CPU_OUT_V2 = consts_ubuntu.EXPECTED_CPU_OUT_V2
 
+
+# get the current linux flavour
+def get_distro(config):
+    with open('/etc/os-release', 'r') as relfile:
+        buf = relfile.read()
+        if "Oracle Linux" in buf:
+            return "oracle"
+        elif "Ubuntu" in buf:
+            return "ubuntu"
+
 # vim: set et ts=4 sw=4:
