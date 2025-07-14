@@ -21,7 +21,8 @@ EXTRA_DIST_PYTHON_UTILS = \
 			  systemd.py \
 			  utils.py \
 			  consts/__init__.py \
-			  consts/consts_ubuntu.py
+			  consts/consts_ubuntu.py \
+			  consts/consts_oracle.py
 
 EXTRA_DIST_PYTHON_TESTS = \
 			  001-cgget-basic_cgget_v1.py \
