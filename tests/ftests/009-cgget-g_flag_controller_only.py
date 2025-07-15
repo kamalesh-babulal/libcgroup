@@ -35,9 +35,11 @@ def test(config):
     version = CgroupVersion.get_version(CONTROLLER)
 
     if version == CgroupVersion.CGROUP_V1:
-        EXPECTED_OUT = [OUT_PREFIX + expected_out for expected_out in consts.EXPECTED_CPU_OUT_V1]
+        EXPECTED_CPU_OUT_V1 = consts.get_consts(config, v1=True)
+        EXPECTED_OUT = [OUT_PREFIX + expected_out for expected_out in EXPECTED_CPU_OUT_V1]
     else:
-        EXPECTED_OUT = [OUT_PREFIX + expected_out for expected_out in consts.EXPECTED_CPU_OUT_V2]
+        EXPECTED_CPU_OUT_V2 = consts.get_consts(config, v1=False)
+        EXPECTED_OUT = [OUT_PREFIX + expected_out for expected_out in EXPECTED_CPU_OUT_V2]
 
     for expected_out in EXPECTED_OUT:
         if len(out.splitlines()) == len(expected_out.splitlines()):

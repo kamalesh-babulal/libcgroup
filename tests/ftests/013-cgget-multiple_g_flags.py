@@ -38,22 +38,24 @@ def test(config):
     version = CgroupVersion.get_version(CONTROLLER1)
 
     if version == CgroupVersion.CGROUP_V1:
+        EXPECTED_CPU_OUT_V1 = consts.get_consts(config, v1=True)
         # Append pid controller [0] and cpu controller [N - 2]
         EXPECTED_OUT = [OUT_PREFIX + consts.EXPECTED_PIDS_OUT[0] + expected_out
-                        for expected_out in consts.EXPECTED_CPU_OUT_V1[:-2]]
+                        for expected_out in EXPECTED_CPU_OUT_V1[:-2]]
         # Append pid controller [1] and cpu controller [N, N - 1]
         EXPECTED_OUT.extend(OUT_PREFIX + consts.EXPECTED_PIDS_OUT[1] + expected_out
-                            for expected_out in consts.EXPECTED_CPU_OUT_V1[-2:])
+                            for expected_out in EXPECTED_CPU_OUT_V1[-2:])
     else:
+        EXPECTED_CPU_OUT_V2 = consts.get_consts(config, v1=False)
         # Append pid controller [0] and cpu controller [N - 2]
         EXPECTED_OUT = [OUT_PREFIX + consts.EXPECTED_PIDS_OUT[0] + expected_out
-                        for expected_out in consts.EXPECTED_CPU_OUT_V2[:-2]]
+                        for expected_out in EXPECTED_CPU_OUT_V2[:-2]]
         # Append pid controller [1] and cpu controller [N, N - 1]
         EXPECTED_OUT.extend(OUT_PREFIX + consts.EXPECTED_PIDS_OUT[1] + expected_out
-                            for expected_out in consts.EXPECTED_CPU_OUT_V2[-2:])
+                            for expected_out in EXPECTED_CPU_OUT_V2[-2:])
         # Append pid controller [2] and cpu controller [N, N - 1]
         EXPECTED_OUT.extend(OUT_PREFIX + consts.EXPECTED_PIDS_OUT[2] + expected_out
-                            for expected_out in consts.EXPECTED_CPU_OUT_V2[-2:])
+                            for expected_out in EXPECTED_CPU_OUT_V2[-2:])
 
     for expected_out in EXPECTED_OUT:
         if len(out.splitlines()) == len(expected_out.splitlines()):

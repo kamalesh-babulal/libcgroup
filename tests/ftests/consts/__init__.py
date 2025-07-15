@@ -7,7 +7,7 @@
 # Author: Kamalesh Babulal <kamalesh.babulal@oracle.com>
 #
 
-from . import consts_ubuntu
+from . import consts_ubuntu, consts_oracle
 import os
 
 DEFAULT_LOG_FILE = 'libcgroup-ftests.log'
@@ -54,10 +54,6 @@ EXPECTED_PIDS_OUT = [
     """
 ]
 
-EXPECTED_CPU_OUT_V1 = consts_ubuntu.EXPECTED_CPU_OUT_V1
-EXPECTED_CPU_OUT_V2 = consts_ubuntu.EXPECTED_CPU_OUT_V2
-
-
 # get the current linux flavour
 def get_distro(config):
     with open('/etc/os-release', 'r') as relfile:
@@ -66,5 +62,20 @@ def get_distro(config):
             return "oracle"
         elif "Ubuntu" in buf:
             return "ubuntu"
+
+
+def get_consts(config, v1=False):
+    distro = get_distro(config)
+
+    if distro == "ubuntu":
+        if v1 is True:
+            return consts_ubuntu.EXPECTED_CPU_OUT_V1
+        else:
+            return consts_ubuntu.EXPECTED_CPU_OUT_V2
+    elif distro == "oracle":
+        if v1 is True:
+            return consts_oracle.EXPECTED_CPU_OUT_V1
+        else:
+            return consts_oracle.EXPECTED_CPU_OUT_V2
 
 # vim: set et ts=4 sw=4:
